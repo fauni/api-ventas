@@ -27,7 +27,7 @@ class Estado(TimeStampedModel):
         verbose_name_plural = 'Estados'
     
     def __str__(self):
-        return self.estado
+        return str(self.id) + ' ' + self.estado
 
 class TipoMovimiento(TimeStampedModel):
     """ Estados de una Tabla """
@@ -103,7 +103,7 @@ class Proveedor(TimeStampedModel):
         verbose_name_plural = 'Proveedores'
     
     def __str__(self):
-        return self.nombre
+        return str(self.id) + ' ' + self.nombre
 
 class Producto(TimeStampedModel):
     UNIT_CHOICES = (

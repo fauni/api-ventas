@@ -1,6 +1,8 @@
 from django.shortcuts import render
 
 from django.views.generic import ListView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 
 #API
 from rest_framework.generics import (
@@ -46,6 +48,8 @@ class EstadoCreateView(CreateAPIView):
 
 class AlmacenListApiView(ListAPIView):
     serializer_class = AlmacenSerializer
+    permission_classes = (IsAuthenticated,)
+    # authentication_class = (TokenAuthentication,)
     def get_queryset(self):
         return Almacen.objects.all()
 
