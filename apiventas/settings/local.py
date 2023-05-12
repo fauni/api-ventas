@@ -2,8 +2,10 @@ from .base import *
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS=['localhost']
-
+# ALLOWED_HOSTS=['localhost']
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:4200',  # Reemplaza con el origen de Angular
+]
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
