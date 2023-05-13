@@ -20,4 +20,8 @@ urlpatterns = [
         views.LogoutView.as_view(), 
         name="user-logout",
     ),
+    path(
+        'auth/',
+        views.CustomAuthToken.as_view(),
+    ),
 ]

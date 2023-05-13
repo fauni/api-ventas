@@ -1,3 +1,7 @@
+from rest_framework import viewsets
+from rest_framework.authtoken.views import ObtainAuthToken
+
+
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 
@@ -11,6 +15,8 @@ from django.views.generic.edit import (
 )
 
 from .models import User
+from .serializers import UserSerializer
+
 from .forms import UserRegisterForm, LoginForm
 
 
@@ -28,6 +34,8 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+
+import jwt
 
 
 class Login(FormView):
@@ -49,6 +57,28 @@ class Login(FormView):
         if token:
             login(self.request, form.get_user())
             return super(Login,self).form_valid(form)
+
+class CustomAuthToken(ObtainAuthToken):
+    def post(self, request):
+        serializer = self.serializer_class(data = request.data, context={ 'request': request })
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+
+        if user is not None:
+            token,_ = Token.objects.get_or_create(user = user)
+            user_data = {
+                'id': user.id,
+                'username': user.username,
+                'nombres': user.nombres,
+                'apellidos': user.apellidos
+            }
+            return Response({
+                'token': token.key,
+                'user': user_data
+            })
+        else:
+            return Response({'error': 'Credenciales Invalidas'}, status = status.HTTP_401_UNAUTHORIZED)
+
 
 
 class Logout(APIView):
