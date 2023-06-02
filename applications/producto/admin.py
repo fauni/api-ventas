@@ -10,6 +10,7 @@ from .models import (
     Producto,
     ProductoLote,
     ProductoStock,
+    ProductoBatch,
     MovimientoStock
 )
 
@@ -24,4 +25,5 @@ admin.site.register(Proveedor)
 admin.site.register(Producto)
 admin.site.register(ProductoLote)
 admin.site.register(ProductoStock)
+admin.site.register(ProductoBatch)
 admin.site.register(MovimientoStock)

@@ -13,8 +13,15 @@ from .models import (
     Proveedor,
     ProductoLote,
     ProductoStock,
-    MovimientoStock
+    MovimientoStock,
+    ProductoBatch
 )
+
+# Tipo de Movimiento
+class TipoMovimientoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TipoMovimiento
+        fields = ('__all__')
 
 # Estado
 
@@ -92,14 +99,75 @@ class ProductoSerializer(serializers.ModelSerializer):
             'estado'
         )
 
+class ProductoMovimientoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Producto
+        fields = (
+            'id',
+            'codigo',
+            'nombre',
+            'descripcion',
+            'imagen_url',
+            'stock',
+            'stock_minimo'
+        )
 class ProductoCreateSeralizer(serializers.ModelSerializer):
     class Meta:
         model = Producto
         fields = ('__all__')
 
+# Producto Stock ####
+class ProductoStockSerializer(serializers.ModelSerializer):
+    producto = ProductoMovimientoSerializer()
+    almacen = AlmacenSerializer()
+    class Meta:
+        model = ProductoStock
+        fields = (
+            'fecha',
+            'producto',
+            'almacen',
+            'valor'
+        )
+
+# Producto Batch ####
+class ProductoBatchSerializer(serializers.ModelSerializer):
+    producto_stock = ProductoStockSerializer()
+    class Meta:
+        model = ProductoBatch
+        fields = (
+            'fecha',
+            'producto_stock',
+            'fecha_vencimiento',
+            'fecha_limite_venta',
+            'lote',
+            'valor'
+        )
+
+# Producto Lote ####
+class ProductoLoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductoLote
+        fields = ('__all__')
 
 # Movimiento de Stock   ####
-class MovimientoStockCreateSerializer(serializers.ModelSerializer):
+# class MovimientoStockCreateSerializer(serializers.ModelSerializer):
+#    class Meta:
+#        model = MovimientoStock
+#        fields = (
+#            'fecha',
+#            'producto',
+#            'lote',
+#            'almacen',
+#            'valor',
+#            'precio',
+#            'descripcion',
+#            'tipo_movimiento'
+#        )
+
+class MovimientoSerializer(serializers.ModelSerializer):
+    producto = ProductoMovimientoSerializer()
+    almacen = AlmacenSerializer()
+    tipo_movimiento = TipoMovimientoSerializer()
     class Meta:
         model = MovimientoStock
         fields = (
@@ -110,7 +178,7 @@ class MovimientoStockCreateSerializer(serializers.ModelSerializer):
             'valor',
             'precio',
             'descripcion',
-            'tipo_movimiento'
+            'tipo_movimiento',
         )
 
 class MovimientoStockLoteCreateSerializer(serializers.ModelSerializer):

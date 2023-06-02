@@ -41,7 +41,7 @@ class TipoMovimiento(TimeStampedModel):
         verbose_name_plural = 'Tipos de Movimiento'
     
     def __str__(self):
-        return self.descripcion
+        return str(self.id) + '- ' + self.descripcion
 
 
 class Almacen (TimeStampedModel):
@@ -143,7 +143,7 @@ class Producto(TimeStampedModel):
         verbose_name_plural = 'Productos'
     
     def __str__(self):
-        return self.nombre
+        return self.nombre + ' - ' + str(self.stock)
 
 class ProductoLote(TimeStampedModel):
     producto = models.ForeignKey(Producto, null=True, blank=True, on_delete=models.CASCADE)
@@ -168,8 +168,21 @@ class ProductoStock(TimeStampedModel):
     
     def __str__(self):
         return self.fecha.strftime("%d/%m/%Y %H:%M:%S") + ' - ' + self.producto.nombre + ' - ' + self.almacen.nombre + ' - ' + str(self.valor)
-    
-    
+
+class ProductoBatch(TimeStampedModel):
+    fecha = models.DateTimeField(editable=False, default=timezone.now)
+    producto_stock = models.ForeignKey(ProductoStock, null=True, blank=True, on_delete=models.CASCADE)
+    fecha_vencimiento = models.DateTimeField(null=True, blank=True, default=timezone.now)
+    fecha_limite_venta = models.DateTimeField(null=True, blank=True, default=timezone.now)
+    lote = models.CharField(max_length=30,null=True, blank=True)
+    valor = models.PositiveBigIntegerField()
+    class Meta:
+        verbose_name= 'Producto Batch'
+        verbose_name_plural = 'Productos Batch'
+    def __str__(self):
+        return self.fecha.strftime("%d/%m/%Y %H:%M:%S") + ' - ' + str(self.producto_stock.id) + ' - ' + self.lote + ' - ' + str(self.valor)
+
+
 class MovimientoStock(TimeStampedModel):
     fecha = models.DateTimeField(editable=False, default=timezone.now)
     producto = models.ForeignKey(Producto, null=True, blank=True, on_delete=models.CASCADE)
@@ -192,7 +205,7 @@ class MovimientoStock(TimeStampedModel):
     def save(self, *args, **kwargs):
         existe = False
         try:
-            productostock = ProductoStock.objects.get(producto = self.producto, almacen = self.almacen)
+            productostock = ProductoStock.objects.get(producto__id = self.producto.id, almacen = self.almacen)
             existe = True
         except ProductoStock.DoesNotExist:
             existe = False
@@ -208,21 +221,50 @@ class MovimientoStock(TimeStampedModel):
                 valor = self.valor
             )
         productostock.save()
+        registra_produto_batch(self, productostock)
+        if(productostock.valor == 0):
+            productostock.delete()
         super(MovimientoStock, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.fecha.strftime("%d/%m/%Y %H:%M:%S") + ' - ' + self.producto.nombre
     
-    
+def registra_produto_batch(movimientoStock = MovimientoStock, productoStock = ProductoStock):
+    existe = False
+    try:
+        productobatch = ProductoBatch.objects.get(lote = movimientoStock.lote, producto_stock__id = productoStock.id)
+        existe = True
+    except ProductoBatch.DoesNotExist:
+        existe = False
+
+    if(existe):
+        productobatch.valor = productoStock.valor
+    else:
+        productobatch = ProductoBatch(
+            producto_stock = productoStock,
+            fecha_vencimiento = movimientoStock.fecha_vencimiento,
+            fecha_limite_venta = movimientoStock.fecha_limite_venta,
+            lote = movimientoStock.lote,
+            valor = movimientoStock.valor
+        )
+    productobatch.save()
+
 def registra_producto_lote(movimientoStock = MovimientoStock):
-    productoLote = ProductoLote(
-        producto = movimientoStock.producto,
-        lote = movimientoStock.lote,
-        fecha_vencimiento = movimientoStock.fecha_vencimiento,
-        fecha_limite_venta = movimientoStock.fecha_limite_venta
-    )
+    existe = False
+    try:
+        productoLote = ProductoLote.objects.get(producto = movimientoStock.producto, lote = movimientoStock.lote)
+        existe = True
+    except ProductoLote.DoesNotExist:
+        existe = False
+
+    if(existe == False):
+        productoLote = ProductoLote(
+            producto = movimientoStock.producto,
+            lote = movimientoStock.lote,
+            fecha_vencimiento = movimientoStock.fecha_vencimiento,
+            fecha_limite_venta = movimientoStock.fecha_limite_venta
+        )
     productoLote.save()
-    # return movimientoStock
 
 def crear_modificar_producto_stock(sender, instance, **kwargs):
     if instance.producto.usa_lotes and instance.tipo_movimiento.id == 1:

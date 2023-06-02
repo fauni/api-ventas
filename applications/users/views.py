@@ -70,7 +70,7 @@ class CustomAuthToken(ObtainAuthToken):
                 'id': user.id,
                 'username': user.username,
                 'nombres': user.nombres,
-                'apellidos': user.apellidos
+                'apellidos': user.apellidos,
             }
             return Response({
                 'token': token.key,

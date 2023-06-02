@@ -21,7 +21,12 @@ from .models import (
     Producto,
     ProductoLote,
     ProductoStock,
+    ProductoBatch,
     MovimientoStock,
+    Categoria,
+    Grupo,
+    Proveedor,
+    TipoMovimiento,
 )
 
 # serializers
@@ -31,8 +36,17 @@ from .serializers import (
     AlmacenCreateSeralizer,
     ProductoCreateSeralizer,
     ProductoSerializer,
+    MovimientoSerializer,
     MovimientoStockCreateSerializer,
-    MovimientoStockLoteCreateSerializer
+    MovimientoStockLoteCreateSerializer,
+    TipoMovimientoSerializer,
+    CategoriaSerializer,
+    GrupoSerializer,
+    ProveedorSerializer,
+    ProductoLoteSerializer,
+    ProductoStockSerializer,
+    ProductoBatchSerializer,
+    ProductoMovimientoSerializer
 )
 
 # ------------- Estado
@@ -49,7 +63,6 @@ class EstadoCreateView(CreateAPIView):
 class AlmacenListApiView(ListAPIView):
     serializer_class = AlmacenSerializer
     permission_classes = (IsAuthenticated,)
-    # authentication_class = (TokenAuthentication,)
     def get_queryset(self):
         return Almacen.objects.all()
 
@@ -67,6 +80,24 @@ class AlmacenDeleteView(DestroyAPIView):
 class AlmacenUpdateView(UpdateAPIView):
     serializer_class = AlmacenCreateSeralizer
     queryset = Almacen.objects.all()
+
+##############      PRODUCTO LOTE VIEWS      #########################
+class ProductoLoteListApiView(ListAPIView):
+    serializer_class = ProductoLoteSerializer
+    def get_queryset(self):
+        kword = self.kwargs['kword']
+        return ProductoLote.objects.filter(
+            producto = kword
+        )
+
+##############      PRODUCTO BATCH VIEW      #########################
+class ProductoBatchListApiView(ListAPIView):
+    serializer_class = ProductoBatchSerializer
+    def get_queryset(self):
+        kword = self.kwargs['kword']
+        return ProductoBatch.objects.filter(
+            producto_stock__producto = kword
+        )
 
 ##############      PRODUCTO VIEWS      #########################
 class ProductoListApiView(ListAPIView):
@@ -89,12 +120,36 @@ class ProductoDeleteView(DestroyAPIView):
     serializer_class = ProductoCreateSeralizer
     queryset = Producto.objects.all()
 
+#################       tipo de movimiento    #######################
+class TipoMovimientoListApiView(ListAPIView):
+    serializer_class = TipoMovimientoSerializer
+    def get_queryset(self):
+        return TipoMovimiento.objects.all()
+
+#################       Stock    #######################
+class StockListApiView(ListAPIView):
+    serializer_class = ProductoMovimientoSerializer
+    def get_queryset(self):
+        return Producto.objects.all()
+
+class StockLoteListApiView(ListAPIView):
+    serializer_class = ProductoBatchSerializer
+    def get_queryset(self):
+        return ProductoBatch.objects.all()
 #################       movimiento stock    #######################
-class MovimientoStockListAiView(ListAPIView):
-    serializer_class = MovimientoStockCreateSerializer
+class MovimientoStockListApiView(ListAPIView):
+    serializer_class = MovimientoSerializer
     def get_queryset(self):
         return MovimientoStock.objects.all()
-    
+
+class MovimientoStockAlmacenListApiView(ListAPIView):
+    serializer_class = MovimientoSerializer
+    def get_queryset(self):
+        kword = self.kwargs['kword']
+        return MovimientoStock.objects.filter(
+            almacen = kword
+        )
+
 class MovimientoStockCreateView(CreateAPIView):
     queryset = MovimientoStock.objects.all()
     serializer_class = MovimientoStockCreateSerializer
@@ -119,3 +174,31 @@ class MovimientoStockCreateView(CreateAPIView):
 
 class MovimientoStockLoteCreateView(CreateAPIView):
     serializer_class = MovimientoStockLoteCreateSerializer
+
+##############      CATEGORIA VIEWS      #########################
+class CategoriaListApiView(ListAPIView):
+    serializer_class = CategoriaSerializer
+    def get_queryset(self):
+        return Categoria.objects.all()
+
+class CategoriaCreateView(CreateAPIView):
+    serializer_class = CategoriaSerializer
+
+
+##############      GRUPO VIEWS      #########################
+class GrupoListApiView(ListAPIView):
+    serializer_class = GrupoSerializer
+    def get_queryset(self):
+        return Grupo.objects.all()
+
+class GrupoCreateView(CreateAPIView):
+    serializer_class = GrupoSerializer
+
+##############      PROVEEDOR VIEWS      #########################
+class ProveedorListApiView(ListAPIView):
+    serializer_class = ProveedorSerializer
+    def get_queryset(self):
+        return Proveedor.objects.all()
+
+class ProveedorCreateView(CreateAPIView):
+    serializer_class = ProveedorSerializer
