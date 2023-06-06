@@ -58,8 +58,8 @@ class EstadoListApiView(ListAPIView):
 
 class EstadoCreateView(CreateAPIView):
     serializer_class = EstadoSerializer
-# ------------- Almacen
 
+# ------------- Almacen
 class AlmacenListApiView(ListAPIView):
     serializer_class = AlmacenSerializer
     permission_classes = (IsAuthenticated,)
@@ -112,11 +112,11 @@ class ProductoDetailView(RetrieveAPIView):
 class ProductoCreateView(CreateAPIView):
     serializer_class = ProductoCreateSeralizer
 
-class ProductoUpdateView(UpdateAPIView):
+class ProductoDeleteView(DestroyAPIView):
     serializer_class = ProductoCreateSeralizer
     queryset = Producto.objects.all()
 
-class ProductoDeleteView(DestroyAPIView):
+class ProductoUpdateView(UpdateAPIView):
     serializer_class = ProductoCreateSeralizer
     queryset = Producto.objects.all()
 
@@ -148,6 +148,14 @@ class MovimientoStockAlmacenListApiView(ListAPIView):
         kword = self.kwargs['kword']
         return MovimientoStock.objects.filter(
             almacen = kword
+        )
+
+class MovimientoStockProductoListApiView(ListAPIView):
+    serializer_class = MovimientoSerializer
+    def get_queryset(self):
+        kword = self.kwargs['kword']
+        return MovimientoStock.objects.filter(
+            producto = kword
         )
 
 class MovimientoStockCreateView(CreateAPIView):

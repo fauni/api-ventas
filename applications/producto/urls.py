@@ -56,7 +56,7 @@ urlpatterns = [
         views.ProductoDeleteView.as_view(),
     ),
     path(
-        'api/almacen/update/<pk>', 
+        'api/producto/update/<pk>',
         views.ProductoUpdateView.as_view(),
     ),
     #############     PRODUCTO LOTE       #################
@@ -97,6 +97,11 @@ urlpatterns = [
     path(
         "api/movimientostock/almacen/<kword>/",
         views.MovimientoStockAlmacenListApiView.as_view(),
+        name="movimientostockalmacen"
+    ),
+    path(
+        "api/movimientostock/producto/<kword>/",
+        views.MovimientoStockProductoListApiView.as_view(),
         name="movimientostockalmacen"
     ),
     path(
