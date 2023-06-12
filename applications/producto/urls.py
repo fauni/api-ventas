@@ -123,6 +123,19 @@ urlpatterns = [
         "api/categoria/create",
         views.CategoriaCreateView.as_view(),
     ),
+    path(
+        'api/categoria/detail/<pk>',
+        views.CategoriaDetailView.as_view(),
+        name='categoria'
+    ),
+    path(
+        'api/categoria/delete/<pk>',
+        views.CategoriaDeleteView.as_view(),
+    ),
+    path(
+        'api/categoria/update/<pk>',
+        views.CategoriaUpdateView.as_view(),
+    ),
 
     #############    Grupos   #####################
     path(
@@ -134,15 +147,41 @@ urlpatterns = [
         "api/grupo/create",
         views.GrupoCreateView.as_view(),
     ),
+    path(
+        'api/grupo/detail/<pk>',
+        views.GrupoDetailView.as_view(),
+        name='grupo'
+    ),
+    path(
+        'api/grupo/delete/<pk>',
+        views.GrupoDeleteView.as_view(),
+    ),
+    path(
+        'api/grupo/update/<pk>',
+        views.GrupoUpdateView.as_view(),
+    ),
 
     #############    Proveedor   #####################
     path(
         "api/proveedor/lista",
         views.ProveedorListApiView.as_view(),
-        name="grupos"
+        name="proveedores"
     ),
     path(
         "api/proveedor/create",
         views.ProveedorCreateView.as_view(),
+    ),
+    path(
+        'api/proveedor/detail/<pk>',
+        views.ProveedorDetailView.as_view(),
+        name='proveedor'
+    ),
+    path(
+        'api/proveedor/delete/<pk>',
+        views.ProveedorDeleteView.as_view(),
+    ),
+    path(
+        'api/proveedor/update/<pk>',
+        views.ProveedorUpdateView.as_view(),
     ),
 ]

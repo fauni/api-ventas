@@ -32,18 +32,39 @@ class EstadoSerializer(serializers.ModelSerializer):
 
 # Categoria Serializer
 class CategoriaSerializer(serializers.ModelSerializer):
+    estado = EstadoSerializer()
+    class Meta:
+        model = Categoria
+        fields = ('__all__')
+
+class CategoriaCreateSerializer(serializers.ModelSerializer):
+    # estado = EstadoSerializer()
     class Meta:
         model = Categoria
         fields = ('__all__')
 
 # Grupo Serializer
+class GrupoCreateSerializer(serializers.ModelSerializer):
+    # estado = EstadoSerializer()
+    class Meta:
+        model = Grupo
+        fields = ('__all__')
+
 class GrupoSerializer(serializers.ModelSerializer):
+    estado = EstadoSerializer()
     class Meta:
         model = Grupo
         fields = ('__all__')
 
 # Provider Serializer
 class ProveedorSerializer(serializers.ModelSerializer):
+    estado = EstadoSerializer()
+    class Meta:
+        model = Proveedor
+        fields = ('__all__')
+
+class ProveedorCreateSerializer(serializers.ModelSerializer):
+    # estado = EstadoSerializer()
     class Meta:
         model = Proveedor
         fields = ('__all__')

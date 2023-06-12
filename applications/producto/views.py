@@ -41,8 +41,11 @@ from .serializers import (
     MovimientoStockLoteCreateSerializer,
     TipoMovimientoSerializer,
     CategoriaSerializer,
+    CategoriaCreateSerializer,
     GrupoSerializer,
+    GrupoCreateSerializer,
     ProveedorSerializer,
+    ProveedorCreateSerializer,
     ProductoLoteSerializer,
     ProductoStockSerializer,
     ProductoBatchSerializer,
@@ -190,8 +193,19 @@ class CategoriaListApiView(ListAPIView):
         return Categoria.objects.all()
 
 class CategoriaCreateView(CreateAPIView):
-    serializer_class = CategoriaSerializer
+    serializer_class = CategoriaCreateSerializer
 
+class CategoriaDetailView(RetrieveAPIView):
+    serializer_class = CategoriaSerializer
+    queryset = Categoria.objects.filter()
+
+class CategoriaDeleteView(DestroyAPIView):
+    serializer_class = CategoriaSerializer
+    queryset = Categoria.objects.all()
+
+class CategoriaUpdateView(UpdateAPIView):
+    serializer_class = CategoriaCreateSerializer
+    queryset = Categoria.objects.all()
 
 ##############      GRUPO VIEWS      #########################
 class GrupoListApiView(ListAPIView):
@@ -200,7 +214,19 @@ class GrupoListApiView(ListAPIView):
         return Grupo.objects.all()
 
 class GrupoCreateView(CreateAPIView):
+    serializer_class = GrupoCreateSerializer
+
+class GrupoDetailView(RetrieveAPIView):
     serializer_class = GrupoSerializer
+    queryset = Grupo.objects.filter()
+
+class GrupoDeleteView(DestroyAPIView):
+    serializer_class = GrupoSerializer
+    queryset = Grupo.objects.all()
+
+class GrupoUpdateView(UpdateAPIView):
+    serializer_class = GrupoCreateSerializer
+    queryset = Grupo.objects.all()
 
 ##############      PROVEEDOR VIEWS      #########################
 class ProveedorListApiView(ListAPIView):
@@ -209,4 +235,16 @@ class ProveedorListApiView(ListAPIView):
         return Proveedor.objects.all()
 
 class ProveedorCreateView(CreateAPIView):
+    serializer_class = ProveedorCreateSerializer
+
+class ProveedorDetailView(RetrieveAPIView):
     serializer_class = ProveedorSerializer
+    queryset = Proveedor.objects.filter()
+
+class ProveedorDeleteView(DestroyAPIView):
+    serializer_class = ProveedorSerializer
+    queryset = Proveedor.objects.all()
+
+class ProveedorUpdateView(UpdateAPIView):
+    serializer_class = ProveedorCreateSerializer
+    queryset = Proveedor.objects.all()
